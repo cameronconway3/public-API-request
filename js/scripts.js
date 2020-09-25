@@ -40,13 +40,12 @@ searchSubmit.setAttribute('class', 'search-submit');
 form.appendChild(searchSubmit);
 
 // Append form to 'searchContainer'
-searchContainer.appendChild(form)
+searchContainer.appendChild(form);
 
 
 /**
- * Gallery
+ * Generate Gallery Function
  */
-
 function generateGallery(employeesObj) {
     // Map the employee objects to an HTML string using template liretals to fill in the relative data
     const employeeCard = employeesObj.map(employee => 
@@ -65,8 +64,11 @@ function generateGallery(employeesObj) {
     gallery.insertAdjacentHTML('beforeend', employeeCard);
 };
 
+
+/**
+ * Generate Modal Function
+ */
 function generateModal(employee) {
-    console.log(employee)
     modalHTML =`
         <div class="modal-container">
             <div class="modal">
@@ -82,51 +84,55 @@ function generateModal(employee) {
                     <p class="modal-text">Birthday: ${employee.dob.date.slice(0,10).split("-")[1]}/${employee.dob.date.slice(0,10).split("-")[2]}/${employee.dob.date.slice(0,10).split("-")[0]}</p>
                 </div>
             </div>
+            <div class="modal-btn-container">
+                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                <button type="button" id="modal-next" class="modal-next btn">Next</button>
+            </div>
         </div>`;
 
     return modalHTML;
 };
 
+
+/**
+ * Display modal of employee card on click
+ */
 function generateCardModals(employeesObj) {
     const cardElements = document.querySelectorAll(".card");
     const modalDiv = document.createElement('div');
+    
     for(let i = 0; i < cardElements.length; i++) {
         cardElements[i].addEventListener('click', () => {
+            // Display modal, which may be hidden after pervious call of removeModal()
+            modalDiv.style.display = "block";
             modalDiv.innerHTML = generateModal(employeesObj[i])
             body.appendChild(modalDiv);
+            // Call removeModal() 
+            removeModal(modalDiv);
+        });
+    }
+};
+
+/**
+ * Close Modal
+ */
+function removeModal(modalDiv) {
+
+    const modalClose = document.querySelectorAll('#modal-close-btn');
+
+    for(let i = 0; i < modalClose.length; i++) {
+        modalClose[i].addEventListener('click', () => {
+            modalDiv.style.display = "none";
         })
     }
 }
 
-
-
-// // Use an AJAX call to return 12 random users and add them to the DOM
-// let xhr = new XMLHttpRequest();
-
-// xhr.onreadystatechange = () => {
-//     if(xhr.readyState === 4 && xhr.status === 200) {
-//         // JSON parse the xhr response and assign the results to 'randomEmployeeObject'
-//         let randomEmployeeObject = JSON.parse(xhr.responseText).results;
-
-//         console.log(randomEmployeeObject[0].dob.date.slice(0,10).split("-"));
-        
-//         generateGallery(randomEmployeeObject);
-
-//         } else {
-//             // If the AJAX call is not successful display an error with the relative status text
-//             Error(xhr.statusText);
-//         }
-//     }
-// // Access the url and get 12 random employees using 'results=12' as a parameter
-// xhr.open('GET', 'https://randomuser.me/api/?results=12');
-// xhr.send();
-
-
-
-
-
-
-
+/**
+ * HTTP request to Random User Generator API
+ */
+// Use an AJAX call to return 12 random users within 'getResponse'
+// Create a promise that returns a response of the 12 random user objects
+// When resolved generate eployee gallery and modals
 function getResponse(url) {
     return new Promise( (resolve, reject) => {
 
@@ -141,10 +147,9 @@ function getResponse(url) {
                 reject( Error(xhr.statusText) );
             }
         }
-        
         xhr.send();
-    })
-}
+    });
+};
 
 getResponse('https://randomuser.me/api/?results=12')
     .then( response => {
