@@ -12,6 +12,7 @@ const searchContainer = document.querySelector('.search-container');
 const gallery = document.querySelector('#gallery');
 const body = document.querySelector('body');
 
+// Create and append the span element used to display a message when search returns no results
 const noSearchMatches = document.createElement("span");
 gallery.appendChild(noSearchMatches);
 
@@ -48,18 +49,12 @@ function createSearch(employeesObj) {
 
     console.log(employeesObj);
 
-    const listOfNames = [];
-
-    // Iterate over each employee displayed and add their full name (lowecase) and a unique identifier to 'listOfNames' in the format - firstname lastname/uuid
-    // The unique identifier will be used to filter correct individuals as names could possibly be the same
-    for(let i = 0; i < employeesObj.length; i++) {
-        listOfNames.push((employeesObj[i].name.first + ' ' + employeesObj[i].name.last + '/' + employeesObj[i].login.uuid).toLocaleLowerCase())
-    };
-
+    // Listen out for click event on 'searchSubmit' and call 'searchEmployees()'
     searchSubmit.addEventListener('click', () => {
         searchEmployees(searchInput.value, employeesObj);
     });
 
+    // Listen out for a keyup event on 'searchSubmit' and call 'searchEmployees()'
     searchInput.addEventListener('keyup', () => {
         searchEmployees(searchInput.value, employeesObj);
     });
@@ -68,24 +63,32 @@ function createSearch(employeesObj) {
 /**
  * Search Employees Functionality
  */
-function searchEmployees(val, employeesObj) {
+function searchEmployees(searchInput, employeesObj) {
 
+    // Set 'noSearchMatches' to an empty string at the start of every function call
     noSearchMatches.innerHTML = '';
 
+    // Create a new array 'filteredEmployees' to store the employees returned by the search logic
     let filteredEmployees = [];
 
+    // Count how many matches are returned from the seach logic
     let resultsCounter = 0;
 
+    // loop through 'employeesObj', if 'searchInput' is not 0 and included within 'fullname' then add that object to 'filteredEmployees'
     for(let i = 0; i < employeesObj.length; i++) {
         let fullname = employeesObj[i].name.first + ' ' + employeesObj[i].name.last;
-        if( val !== 0 && fullname.toLocaleLowerCase().includes(val.toLocaleLowerCase())) {
+        if( searchInput !== 0 && fullname.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase())) {
             filteredEmployees.push(employeesObj[i]);
             resultsCounter++;
         }
-    }
-    
+    };
+
+    // Create a variable called 'employeeCards' and assign all the employee card elements to it
     const employeeCards = document.querySelectorAll('.card');
 
+    // If 'returnCounter' has no matches update the innerHTML of 'noSearchMatches' and remove all 'employeeCards'
+    // Else, remove all 'employeeCards' and update the gallery using 'generateGallery()' with the filtered employees in 'filteredEmployees'
+    // Call 'generateCardModals()' to update the filtered employees with their relative modals
     if(resultsCounter == 0) {
         for(let i = 0; i < employeeCards.length; i++) {
             employeeCards[i].remove();
@@ -98,7 +101,8 @@ function searchEmployees(val, employeesObj) {
         };
         noSearchMatches.style.display = "none";
         generateGallery(filteredEmployees);
-    }
+        generateCardModals(filteredEmployees);
+    };
 }
 
 /**
@@ -127,6 +131,7 @@ function generateGallery(employeesObj) {
  * Generate Modal Function
  */
 function generateModal(employee) {
+    // Create and return the modal HTML with the realtive employee data passed as an argument as an object
     modalHTML =`
         <div class="modal-container">
             <div class="modal">
@@ -175,7 +180,7 @@ function generateCardModals(employeesObj) {
  * Close Modal
  */
 function removeModal(modalDiv) {
-
+    // Access the close modal button
     const modalClose = document.querySelectorAll('#modal-close-btn');
 
     for(let i = 0; i < modalClose.length; i++) {
