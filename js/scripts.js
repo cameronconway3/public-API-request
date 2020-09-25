@@ -12,36 +12,94 @@ const searchContainer = document.querySelector('.search-container');
 const gallery = document.querySelector('#gallery');
 const body = document.querySelector('body');
 
+const noSearchMatches = document.createElement("span");
+gallery.appendChild(noSearchMatches);
+
 /**
- * Search Container
+ * Search container and events
  */
-// Creating and appending search feature to 'search-container'
-// Create a form element and set attributes
-let form = document.createElement('form');
-form.setAttribute('action', '#');
-form.setAttribute('method', 'get');
+function createSearch(employeesObj) {
+    // Creating and appending search feature to 'search-container'
+    // Create a form element and set attributes
+    let form = document.createElement('form');
+    form.setAttribute('action', '#');
+    form.setAttribute('method', 'get');
 
-// Create input and set attributes
-let searchInput = document.createElement('input');
-searchInput.setAttribute('type', 'search');
-searchInput.setAttribute('id', 'search-input');
-searchInput.setAttribute('class', 'search-input');
-searchInput.setAttribute('placeholder', 'Search...');
-// Append input to form
-form.appendChild(searchInput);
+    // Create input and set attributes
+    let searchInput = document.createElement('input');
+    searchInput.setAttribute('type', 'search');
+    searchInput.setAttribute('id', 'search-input');
+    searchInput.setAttribute('class', 'search-input');
+    searchInput.setAttribute('placeholder', 'Search...');
+    // Append input to form
+    form.appendChild(searchInput);
 
-// Create input and set attributes
-let searchSubmit = document.createElement('input');
-searchSubmit.setAttribute('type', 'submit');
-searchSubmit.setAttribute('value', '&#x1F50D;');
-searchSubmit.setAttribute('id', 'search-submit');
-searchSubmit.setAttribute('class', 'search-submit');
-// Append input to form
-form.appendChild(searchSubmit);
+    // Create input and set attributes
+    let searchSubmit = document.createElement('input');
+    searchSubmit.setAttribute('type', 'submit');
+    searchSubmit.setAttribute('value', '&#x1F50D;');
+    searchSubmit.setAttribute('id', 'search-submit');
+    searchSubmit.setAttribute('class', 'search-submit');
+    // Append input to form
+    form.appendChild(searchSubmit);
 
-// Append form to 'searchContainer'
-searchContainer.appendChild(form);
+    // Append form to 'searchContainer'
+    searchContainer.appendChild(form);
 
+    console.log(employeesObj);
+
+    const listOfNames = [];
+
+    // Iterate over each employee displayed and add their full name (lowecase) and a unique identifier to 'listOfNames' in the format - firstname lastname/uuid
+    // The unique identifier will be used to filter correct individuals as names could possibly be the same
+    for(let i = 0; i < employeesObj.length; i++) {
+        listOfNames.push((employeesObj[i].name.first + ' ' + employeesObj[i].name.last + '/' + employeesObj[i].login.uuid).toLocaleLowerCase())
+    };
+
+    searchSubmit.addEventListener('click', () => {
+        searchEmployees(searchInput.value, employeesObj);
+    });
+
+    searchInput.addEventListener('keyup', () => {
+        searchEmployees(searchInput.value, employeesObj);
+    });
+}
+
+/**
+ * Search Employees Functionality
+ */
+function searchEmployees(val, employeesObj) {
+
+    noSearchMatches.innerHTML = '';
+
+    let filteredEmployees = [];
+
+    let resultsCounter = 0;
+
+    for(let i = 0; i < employeesObj.length; i++) {
+        let fullname = employeesObj[i].name.first + ' ' + employeesObj[i].name.last;
+        if( val !== 0 && fullname.toLocaleLowerCase().includes(val.toLocaleLowerCase())) {
+            filteredEmployees.push(employeesObj[i]);
+            resultsCounter++;
+        }
+    }
+    
+    const employeeCards = document.querySelectorAll('.card');
+
+    if(resultsCounter == 0) {
+        for(let i = 0; i < employeeCards.length; i++) {
+            employeeCards[i].remove();
+        }
+        noSearchMatches.innerHTML = "No matches found";
+        noSearchMatches.style.display = "block";
+    } else {
+        for(let i = 0; i < employeeCards.length; i++) {
+            employeeCards[i].remove()
+        };
+        noSearchMatches.style.display = "none";
+        generateGallery(filteredEmployees);
+    }
+}
 
 /**
  * Generate Gallery Function
@@ -155,8 +213,11 @@ getResponse('https://randomuser.me/api/?results=12')
     .then( response => {
         generateGallery(response)
         generateCardModals(response)
+        createSearch(response)
     })
     .catch((response) => console.log(response));
+
+
 
 
 
