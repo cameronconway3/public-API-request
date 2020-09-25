@@ -47,8 +47,6 @@ function createSearch(employeesObj) {
     // Append form to 'searchContainer'
     searchContainer.appendChild(form);
 
-    console.log(employeesObj);
-
     // Listen out for click event on 'searchSubmit' and call 'searchEmployees()'
     searchSubmit.addEventListener('click', () => {
         searchEmployees(searchInput.value, employeesObj);
@@ -58,7 +56,7 @@ function createSearch(employeesObj) {
     searchInput.addEventListener('keyup', () => {
         searchEmployees(searchInput.value, employeesObj);
     });
-}
+};
 
 /**
  * Search Employees Functionality
@@ -103,7 +101,7 @@ function searchEmployees(searchInput, employeesObj) {
         generateGallery(filteredEmployees);
         generateCardModals(filteredEmployees);
     };
-}
+};
 
 /**
  * Generate Gallery Function
@@ -170,11 +168,33 @@ function generateCardModals(employeesObj) {
             modalDiv.style.display = "block";
             modalDiv.innerHTML = generateModal(employeesObj[i])
             body.appendChild(modalDiv);
+            // Modal toggle
+            toggleModal(modalDiv, employeesObj);
             // Call removeModal() 
             removeModal(modalDiv);
         });
     }
 };
+
+
+/**
+ * Toggle Modals
+ */
+function toggleModal(modalDiv, employeesObj) {
+    const prev = document.querySelector('#modal-prev');
+    const next = document.querySelector('#modal-next');
+
+    console.log(employeesObj)
+
+    prev.addEventListener('click', e => {
+
+    });
+
+    next.addEventListener('click', e => {
+
+    });
+}
+
 
 /**
  * Close Modal
@@ -188,18 +208,20 @@ function removeModal(modalDiv) {
             modalDiv.style.display = "none";
         })
     }
-}
+};
+
+
 
 /**
  * HTTP request to Random User Generator API
  */
 // Use an AJAX call to return 12 random users within 'getResponse'
 // Create a promise that returns a response of the 12 random user objects
-// When resolved generate eployee gallery and modals
 function getResponse(url) {
     return new Promise( (resolve, reject) => {
 
         let xhr = new XMLHttpRequest();
+        // Request to random user generator API, with the perameters of 12 users and nationality US.
         xhr.open('GET', 'https://randomuser.me/api/?results=12&nat=us');
 
         xhr.onload = () => {
@@ -209,11 +231,12 @@ function getResponse(url) {
             } else {
                 reject( Error(xhr.statusText) );
             }
-        }
+        };
         xhr.send();
     });
 };
 
+// Execute 'getResponse()', wait for the Promise to resolve and then carry out functionality in 'then()'
 getResponse('https://randomuser.me/api/?results=12')
     .then( response => {
         generateGallery(response)
