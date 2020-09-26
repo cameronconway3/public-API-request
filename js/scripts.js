@@ -21,19 +21,18 @@ gallery.appendChild(noSearchMatches);
  * Search container and events
  */
 function createSearch(employeesObj) {
-
+    // Create the HTML form element and insert it into the DOM
     const searchFormHTML =
         `<form action="#" method="get">
         <input type="search" id="search-input" class="search-input" placeholder="Search...">
         <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-      </form>`
-
+      </form>`;
     searchContainer.insertAdjacentHTML('beforeend', searchFormHTML);
 
     searchInput = document.querySelector('#search-input');
     searchSubmit = document.querySelector('#search-submit');
 
-    // Listen out for a keyup event on 'searchSubmit' and call 'searchEmployees()'
+    // Listen out for a keyup event on 'searchInput' and call 'searchEmployees()'
     searchInput.addEventListener('keyup', () => {
         searchEmployees(searchInput.value, employeesObj);
     });
@@ -168,18 +167,21 @@ function generateCardModals(employeesObj) {
  * Toggle Modals
  */
 function toggleModal(modalDiv, employeesObj) {
+    // Access the prev and next button of the modal passed as an argument 'modalDiv'
     const prev = modalDiv.children[0].children[1].children[0];
     const next = modalDiv.children[0].children[1].children[1];
     
+    // Assign all the current card elements to 'cards'
     const cards = document.querySelectorAll('.card');
     
+    // On click of 'prev' get the index of the current modal, then if the current index - 1 is not undefined add that modal to the body
+    // Then call 'toggleModal()' and 'removeModal()'
     prev.addEventListener('click', e => {
         const nameModal = e.target.parentNode.parentNode.children[0].children[1].children[1].innerHTML;
         const emailModal = e.target.parentNode.parentNode.children[0].children[1].children[2].innerHTML;
 
         let indexOfCard;
         
-        // The length of the 'employeeObj' and 'cards' will be the same
         // Loop through each card and get the full name and email of each card
         // If that value matches the the name and the email on the modal get the index of that card
         for(let i = 0; i < cards.length; i++) {
@@ -191,6 +193,7 @@ function toggleModal(modalDiv, employeesObj) {
             }
         };
 
+        // If there is a previous card display it and call modal functions
         if(cards[indexOfCard-1] !== undefined) {
             modalDiv.innerHTML = generateModal(employeesObj[indexOfCard-1])
             body.appendChild(modalDiv);
@@ -207,8 +210,7 @@ function toggleModal(modalDiv, employeesObj) {
 
         let indexOfCard;
         
-        // The length of the 'employeeObj' and 'cards' will be the same
-        // Loop through each card and get the full name and email of each card
+        /// Loop through each card and get the full name and email of each card
         // If that value matches the the name and the email on the modal get the index of that card
         for(let i = 0; i < cards.length; i++) {
             const fullnameCard = cards[i].children[1].children[0].innerHTML;
@@ -219,6 +221,7 @@ function toggleModal(modalDiv, employeesObj) {
             }
         };
 
+        // If there is a next card display it and call modal functions
         if(cards[indexOfCard+1] !== undefined) {
             modalDiv.innerHTML = generateModal(employeesObj[indexOfCard+1]);
             body.appendChild(modalDiv);
@@ -237,13 +240,13 @@ function toggleModal(modalDiv, employeesObj) {
  */
 function removeModal(modalDiv) {
     // Access the close modal button
-    const modalClose = document.querySelectorAll('#modal-close-btn');
+    const modalClose = modalDiv.children[0].children[0].children[0];
 
-    for(let i = 0; i < modalClose.length; i++) {
-        modalClose[i].addEventListener('click', () => {
-            modalDiv.style.display = "none";
-        })
-    }
+    // On click of 'modalClose' hide the modal
+    modalClose.addEventListener('click', () => {
+        modalDiv.style.display = "none";
+    })
+
 };
 
 
