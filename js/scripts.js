@@ -249,44 +249,20 @@ function removeModal(modalDiv) {
 
 };
 
-
-
 /**
  * HTTP request to Random User Generator API
  */
-// Use an AJAX call to return 12 random users within 'getResponse'
-// Create a promise that returns a response of the 12 random user objects
-function getResponse(url) {
-    return new Promise( (resolve, reject) => {
-
-        let xhr = new XMLHttpRequest();
-        // Request to random user generator API, with the perameters of 12 users and nationality US.
-        xhr.open('GET', url);
-
-        xhr.onload = () => {
-            if(xhr.readyState === 4 && xhr.status === 200) {
-                let randomEmployeeObject = JSON.parse(xhr.responseText).results;
-                resolve(randomEmployeeObject);
-            } else {
-                reject( Error(xhr.statusText) );
-            }
-        };
-        xhr.send();
-    });
-};
-
-// Execute 'getResponse()', wait for the Promise to resolve and then carry out functionality in 'then()'
-getResponse('https://randomuser.me/api/?results=12&nat=us')
-    .then( response => {
-        generateGallery(response)
-        generateCardModals(response)
-        createSearch(response)
+// Use .then() and turn the response of the fetch into JSON, use .then() again to access the emoloyee objects using data.results
+// Call 'generateGallery()', 'generateCardModals()' and 'createSearch()'
+// Catch any errors and console log the error
+fetch('https://randomuser.me/api/?results=12&nat=us')
+    .then(response => response.json())
+    .then(data => {
+        generateGallery(data.results)
+        generateCardModals(data.results)
+        createSearch(data.results)
     })
-    .catch((response) => console.log(response));
-
-
-
-
+    .catch(error => console.log(error))
 
 
 
