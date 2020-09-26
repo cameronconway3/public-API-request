@@ -181,18 +181,67 @@ function generateCardModals(employeesObj) {
  * Toggle Modals
  */
 function toggleModal(modalDiv, employeesObj) {
-    const prev = document.querySelector('#modal-prev');
-    const next = document.querySelector('#modal-next');
-
-    console.log(employeesObj)
-
+    const prev = modalDiv.children[0].children[1].children[0];
+    const next = modalDiv.children[0].children[1].children[1];
+    
+    const cards = document.querySelectorAll('.card');
+    
     prev.addEventListener('click', e => {
+        const nameModal = e.target.parentNode.parentNode.children[0].children[1].children[1].innerHTML;
+        const emailModal = e.target.parentNode.parentNode.children[0].children[1].children[2].innerHTML;
 
+        let indexOfCard;
+        
+        // The length of the 'employeeObj' and 'cards' will be the same
+        // Loop through each card and get the full name and email of each card
+        // If that value matches the the name and the email on the modal get the index of that card
+        for(let i = 0; i < cards.length; i++) {
+            const fullnameCard = cards[i].children[1].children[0].innerHTML;
+            const emailCard = cards[i].children[1].children[1].innerHTML;
+
+            if(nameModal === fullnameCard && emailModal === emailCard) {
+                indexOfCard = i;
+            }
+        };
+
+        if(cards[indexOfCard-1] !== undefined) {
+            modalDiv.innerHTML = generateModal(employeesObj[indexOfCard-1])
+            body.appendChild(modalDiv);
+            // Modal toggle
+            toggleModal(modalDiv, employeesObj);
+            // Call removeModal() 
+            removeModal(modalDiv);
+        };
     });
-
+    
     next.addEventListener('click', e => {
+        const nameModal = e.target.parentNode.parentNode.children[0].children[1].children[1].innerHTML;
+        const emailModal = e.target.parentNode.parentNode.children[0].children[1].children[2].innerHTML;
 
+        let indexOfCard;
+        
+        // The length of the 'employeeObj' and 'cards' will be the same
+        // Loop through each card and get the full name and email of each card
+        // If that value matches the the name and the email on the modal get the index of that card
+        for(let i = 0; i < cards.length; i++) {
+            const fullnameCard = cards[i].children[1].children[0].innerHTML;
+            const emailCard = cards[i].children[1].children[1].innerHTML;
+
+            if(nameModal === fullnameCard && emailModal === emailCard) {
+                indexOfCard = i;
+            }
+        };
+
+        if(cards[indexOfCard+1] !== undefined) {
+            modalDiv.innerHTML = generateModal(employeesObj[indexOfCard+1]);
+            body.appendChild(modalDiv);
+            // Modal toggle
+            toggleModal(modalDiv, employeesObj);
+            // Call removeModal() 
+            removeModal(modalDiv);
+        };
     });
+    
 }
 
 
@@ -222,7 +271,7 @@ function getResponse(url) {
 
         let xhr = new XMLHttpRequest();
         // Request to random user generator API, with the perameters of 12 users and nationality US.
-        xhr.open('GET', 'https://randomuser.me/api/?results=12&nat=us');
+        xhr.open('GET', url);
 
         xhr.onload = () => {
             if(xhr.readyState === 4 && xhr.status === 200) {
@@ -237,7 +286,7 @@ function getResponse(url) {
 };
 
 // Execute 'getResponse()', wait for the Promise to resolve and then carry out functionality in 'then()'
-getResponse('https://randomuser.me/api/?results=12')
+getResponse('https://randomuser.me/api/?results=12&nat=us')
     .then( response => {
         generateGallery(response)
         generateCardModals(response)
