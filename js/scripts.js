@@ -14,46 +14,32 @@ const body = document.querySelector('body');
 
 // Create and append the span element used to display a message when search returns no results
 const noSearchMatches = document.createElement("span");
+noSearchMatches.style.display = "none";
 gallery.appendChild(noSearchMatches);
 
 /**
  * Search container and events
  */
 function createSearch(employeesObj) {
-    // Creating and appending search feature to 'search-container'
-    // Create a form element and set attributes
-    let form = document.createElement('form');
-    form.setAttribute('action', '#');
-    form.setAttribute('method', 'get');
 
-    // Create input and set attributes
-    let searchInput = document.createElement('input');
-    searchInput.setAttribute('type', 'search');
-    searchInput.setAttribute('id', 'search-input');
-    searchInput.setAttribute('class', 'search-input');
-    searchInput.setAttribute('placeholder', 'Search...');
-    // Append input to form
-    form.appendChild(searchInput);
+    const searchFormHTML =
+        `<form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+      </form>`
 
-    // Create input and set attributes
-    let searchSubmit = document.createElement('input');
-    searchSubmit.setAttribute('type', 'submit');
-    searchSubmit.setAttribute('value', '&#x1F50D;');
-    searchSubmit.setAttribute('id', 'search-submit');
-    searchSubmit.setAttribute('class', 'search-submit');
-    // Append input to form
-    form.appendChild(searchSubmit);
+    searchContainer.insertAdjacentHTML('beforeend', searchFormHTML);
 
-    // Append form to 'searchContainer'
-    searchContainer.appendChild(form);
-
-    // Listen out for click event on 'searchSubmit' and call 'searchEmployees()'
-    searchSubmit.addEventListener('click', () => {
-        searchEmployees(searchInput.value, employeesObj);
-    });
+    searchInput = document.querySelector('#search-input');
+    searchSubmit = document.querySelector('#search-submit');
 
     // Listen out for a keyup event on 'searchSubmit' and call 'searchEmployees()'
     searchInput.addEventListener('keyup', () => {
+        searchEmployees(searchInput.value, employeesObj);
+    });
+
+    // Listen out for click event on 'searchSubmit' and call 'searchEmployees()'
+    searchSubmit.addEventListener('click', () => {
         searchEmployees(searchInput.value, employeesObj);
     });
 };
@@ -65,6 +51,7 @@ function searchEmployees(searchInput, employeesObj) {
 
     // Set 'noSearchMatches' to an empty string at the start of every function call
     noSearchMatches.innerHTML = '';
+    noSearchMatches.style.display = "none";
 
     // Create a new array 'filteredEmployees' to store the employees returned by the search logic
     let filteredEmployees = [];

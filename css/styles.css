@@ -14,9 +14,9 @@ html, body {
 }
 
 body {
-    font-family: "Nunito", sans-serif;
+    font-family: "Times New Roman", "Nunito", sans-serif;
     text-align: center;
-    background: rgba(235, 235, 235, 0.9);
+    background: rgba(153, 204, 255, 0.5);
 }
 
 header {
@@ -30,7 +30,7 @@ header {
 
 header h1 {
     font-size: 1.25em;
-    color: rgba(50, 50, 50, 0.9);
+    color: #1a8cff;
     margin-top: 35px;
 }
 
@@ -92,6 +92,10 @@ header h1 {
     border: 1px solid rgba(50, 50, 50, 0.3);
     transition: .4s ease-out;
     overflow: hidden;
+    background-color: #e6f2ff;
+    -moz-box-shadow:    3px 3px 10px 0px black;
+    -webkit-box-shadow: 3px 3px 10px 0px black;
+    box-shadow:         3px 3px 10px 0px black;
 }
 
 .card-img {
